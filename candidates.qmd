@@ -2,5 +2,14 @@
 title: "Life Expectancy for Political Candidates"
 format: html
 author: Luke Li
+execute:
+    echo: false
 ---
 
+The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in.
+
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
