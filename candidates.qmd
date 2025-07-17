@@ -7,16 +7,6 @@ execute:
     warning: false
 ---
 
-The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in. A potential weakness in our model is that our population and dataset range from many years ago, but our preceptor table is only looking at the current period of time as we aim to predict the future. Thus, there is a lack of stability, and our model could be affected. We model the years that candidates lived after they ran for election, lived_after, as a linear function of sex, sexMale, and the age they were during the election, election_age.
-
-$$
-Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon
-$$
-
-$$
-\widehat{\text{lived\_after}} = 58.3 + 0.146 \cdot \text{sex}_{\text{male}} - 0.681 \cdot \text{election\_age}
-$$
-
 ```{r}
 #| message: false
 library(tidyverse)
@@ -36,17 +26,6 @@ fit_years <- linear_reg(engine = "lm") |>
 ```
 
 ```{r}
-library(knitr)
-library(dplyr)
-
-tidy(fit_years, conf.int = TRUE) %>%
-  select(term, estimate, conf.low, conf.high) %>%
-  mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
-  kable(col.names = c("Term", "Estimate", "CI Lower", "CI Upper"),
-  caption = "Model Coefficients with 95% Confidence Intervals")
-```
-
-```{r}
 library(ggplot2)
 
 predictions <- x %>%
@@ -63,3 +42,24 @@ ggplot(predictions, aes(x = election_age, y = .pred, color = sex)) +
     color = "Sex"
   )
 ```
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon
+$$
+
+$$
+\widehat{\text{lived\_after}} = 58.3 + 0.146 \cdot \text{sex}_{\text{male}} - 0.681 \cdot \text{election\_age}
+$$
+
+```{r}
+library(knitr)
+library(dplyr)
+
+tidy(fit_years, conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
+  kable(col.names = c("Term", "Estimate", "CI Lower", "CI Upper"),
+  caption = "Model Coefficients with 95% Confidence Intervals")
+```
+
+The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in. A potential weakness in our model is that our population and dataset range from many years ago, but our preceptor table is only looking at the current period of time as we aim to predict the future. Thus, there is a lack of stability, and our model could be affected. We model the years that candidates lived after they ran for election, lived_after, as a linear function of sex, sexMale, and the age they were during the election, election_age. One quantity of interest our coefficient for election_age, the age of the candidate during the election. Our value was -0.681, and our 95% confidence interval for that value ranged from -0.714 to -0.649. This means that for every year older the candidate was, they would live 0.681 less years after the election. The estimate and its uncertainty could be wrong because the data we collected was only from candidates who ran for governor, which is not representative of the total population of all politicians that we are aiming for. Thus, if governors live longer than other politicians, the true estimate and confidence interval for that coefficient could be more negative, meaning the candidates would live less long after the election.
