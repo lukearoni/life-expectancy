@@ -6,10 +6,29 @@ execute:
     echo: false
 ---
 
-The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in.
+The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in. A potential weakness in our model is that our population and dataset range from many years ago, but our preceptor table is only looking at the current period of time as we aim to predict the future. Thus, there is a lack of stability, and our model could be affected.
+
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon
+$$
+
+$$
+\widehat{\text{lived\_after}} = 58.3 + 0.146 \cdot \text{sex}_{\text{male}} - 0.681 \cdot \text{election\_age}
+$$
 
 ```{r}
 #| message: false
 library(tidyverse)
 library(primer.data)
+library(tidymodels)
+library(broom)
+```
+
+```{r}
+#| cache: true
+
+x <- governors
+
+fit_years <- linear_reg(engine = "lm") |> 
+   fit(lived_after ~ sex + election_age, data = x)
 ```
