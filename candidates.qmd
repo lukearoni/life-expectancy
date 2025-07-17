@@ -6,7 +6,7 @@ execute:
     echo: false
 ---
 
-The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in. A potential weakness in our model is that our population and dataset range from many years ago, but our preceptor table is only looking at the current period of time as we aim to predict the future. Thus, there is a lack of stability, and our model could be affected.
+The health and lifespan of people change over time, and added stress from running in a political election affects that. Using 3,587 observations of political candidates from the paper "Longevity Returns to Political Office" by Barfort, Klemmensen & Larsen (2019), we aim to create a model for finding how long  candidates live after the election they run in. A potential weakness in our model is that our population and dataset range from many years ago, but our preceptor table is only looking at the current period of time as we aim to predict the future. Thus, there is a lack of stability, and our model could be affected. We model the years that candidates lived after they ran for election, lived_after, as a linear function of sex, sexMale, and the age they were during the election, election_age.
 
 $$
 Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon
@@ -31,4 +31,15 @@ x <- governors
 
 fit_years <- linear_reg(engine = "lm") |> 
    fit(lived_after ~ sex + election_age, data = x)
+```
+
+```{r}
+library(knitr)
+library(dplyr)
+
+tidy(fit_years, conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>%
+  kable(col.names = c("Term", "Estimate", "CI Lower", "CI Upper"),
+  caption = "Model Coefficients with 95% Confidence Intervals")
 ```
